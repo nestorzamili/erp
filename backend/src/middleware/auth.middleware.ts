@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
 import jwt from 'jsonwebtoken'
 import prisma from '../config/db'
+import logger from '../config/logger'
 
 const JWT_SECRET = process.env.JWT_SECRET as string
 
@@ -34,12 +35,14 @@ export const authMiddleware = async (
 ): Promise<void> => {
   const token = req.headers.authorization?.split(' ')[1]
   if (!token) {
+    logger.error('Access denied. No token provided.')
     res.status(401).json({ message: 'Access denied. No token provided.' })
     return
   }
 
   const decoded = await verifyToken(token)
   if (!decoded) {
+    logger.warn('Unauthorized access attempt to user route')
     res.status(401).json({ message: 'Invalid token' })
     return
   }
@@ -63,12 +66,14 @@ export const isAdmin = async (
 ): Promise<void> => {
   const token = req.headers.authorization?.split(' ')[1]
   if (!token) {
+    logger.error('Access denied. No token provided.')
     res.status(401).json({ message: 'Access denied. No token provided.' })
     return
   }
 
   const decoded = await verifyToken(token)
   if (!decoded) {
+    logger.warn('Unauthorized access attempt to admin route')
     res.status(401).json({ message: 'Invalid token' })
     return
   }
@@ -84,12 +89,14 @@ export const isAdmin = async (
   // Cari user di database
   const user = await prisma.user.findUnique({ where: { id: decoded.userId } })
   if (!user || user.id !== decoded.userId) {
+    logger.error('Invalid token')
     res.status(401).json({ message: 'Invalid token' })
     return
   }
 
   // Periksa role user
   if (user.role !== 'admin') {
+    logger.error('Access denied. Unauthorized user.')
     res.status(403).json({ message: 'Access denied. Unauthorized user.' })
     return
   }
