@@ -7,7 +7,10 @@ import {
   generateVerificationToken,
 } from '../utils/jwt'
 import jwt from 'jsonwebtoken'
-import { sendVerificationEmail } from '../services/email.service'
+import {
+  sendVerificationEmail,
+  sendPasswordResetEmail,
+} from '../services/email.service'
 
 export const register = async (req: Request, res: Response): Promise<void> => {
   const { name, email, password, role } = req.body
@@ -208,5 +211,82 @@ export const verifyEmail = async (
   } catch (error) {
     console.error(error)
     res.status(400).json({ message: 'Invalid token' })
+  }
+}
+
+export const requestPasswordReset = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
+  const { email } = req.body
+
+  if (!email) {
+    res.status(400).json({ message: 'Email is required' })
+    return
+  }
+
+  try {
+    const user = await prisma.user.findUnique({ where: { email } })
+
+    if (!user) {
+      res.status(404).json({ message: 'User not found' })
+      return
+    }
+
+    const resetToken = generateVerificationToken()
+    await prisma.user.update({
+      where: { email },
+      data: {
+        resetToken: resetToken,
+        resetTokenExpires: new Date(Date.now() + 15 * 60 * 1000), // Token berlaku 15 menit
+      },
+    })
+
+    await sendPasswordResetEmail(email, resetToken)
+    res.json({ message: 'Password reset email sent' })
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ message: 'Internal Server Error' })
+  }
+}
+
+export const resetPassword = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
+  const { token, newPassword } = req.body
+
+  if (!token || !newPassword) {
+    res.status(400).json({ message: 'Token and new password are required' })
+    return
+  }
+
+  try {
+    const user = await prisma.user.findFirst({
+      where: {
+        resetToken: token,
+        resetTokenExpires: { gt: new Date() }, // Cek apakah token masih berlaku
+      },
+    })
+
+    if (!user) {
+      res.status(400).json({ message: 'Invalid or expired token' })
+      return
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10)
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        password: hashedPassword,
+        resetToken: null, // Hapus token setelah reset
+        resetTokenExpires: null, // Hapus waktu kedaluwarsa
+      },
+    })
+
+    res.json({ message: 'Password reset successfully' })
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ message: 'Internal Server Error' })
   }
 }

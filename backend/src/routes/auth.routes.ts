@@ -5,6 +5,8 @@ import {
   refreshToken,
   requestEmailVerification,
   verifyEmail,
+  requestPasswordReset,
+  resetPassword,
 } from '../controllers/auth.controller'
 import { isAdmin, authMiddleware } from '../middleware/auth.middleware'
 
@@ -16,6 +18,9 @@ router.post('/auth/refresh-token', refreshToken)
 
 router.post('/auth/request-verification', requestEmailVerification)
 router.get('/auth/verify-email', verifyEmail)
+
+router.post('/auth/request-password-reset', requestPasswordReset)
+router.post('/auth/reset-password', resetPassword)
 
 router.get('/admin', isAdmin, (req, res) => {
   if (!req.user) {

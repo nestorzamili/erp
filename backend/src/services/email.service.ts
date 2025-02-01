@@ -17,3 +17,20 @@ export const sendVerificationEmail = async (email: string, token: string) => {
     html: htmlContent,
   })
 }
+
+export const sendPasswordResetEmail = async (email: string, token: string) => {
+  const resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${token}`
+  const htmlContent = generateEmailTemplate({
+    title: 'Reset Your Password',
+    message: 'Please click the button below to reset your password.',
+    buttonText: 'Reset Password',
+    buttonLink: resetLink,
+  })
+
+  await transporter.sendMail({
+    from: `"PT Navindo Maritim Indonesia" <${process.env.EMAIL_USER}>`,
+    to: email,
+    subject: 'Password Reset',
+    html: htmlContent,
+  })
+}
