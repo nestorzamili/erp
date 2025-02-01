@@ -1,5 +1,11 @@
 import express from 'express'
-import { register, login, refreshToken } from '../controllers/auth.controller'
+import {
+  register,
+  login,
+  refreshToken,
+  requestEmailVerification,
+  verifyEmail,
+} from '../controllers/auth.controller'
 import { isAdmin, authMiddleware } from '../middleware/auth.middleware'
 
 const router = express.Router()
@@ -7,6 +13,9 @@ const router = express.Router()
 router.post('/auth/register', register)
 router.post('/auth/login', login)
 router.post('/auth/refresh-token', refreshToken)
+
+router.post('/auth/request-verification', requestEmailVerification)
+router.get('/auth/verify-email', verifyEmail)
 
 router.get('/admin', isAdmin, (req, res) => {
   if (!req.user) {
