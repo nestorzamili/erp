@@ -8,16 +8,101 @@ datasource db {
 }
 
 model User {
-    id                String    @id @default(uuid())
-    email             String    @unique
-    password          String
-    name              String
-    role              String
-    isVerified        Boolean   @default(false)
-    verificationToken String?
-    verifyExpires     DateTime?
-    resetToken        String?
-    resetTokenExpires DateTime?
-    createdAt         DateTime  @default(now())
-    updatedAt         DateTime  @updatedAt
+    id                 String      @id @default(uuid())
+    email              String      @unique
+    password           String
+    name               String
+    role               String
+    isVerified         Boolean     @default(false)
+    verificationToken  String?
+    verifyExpires      DateTime?
+    resetToken         String?
+    resetTokenExpires  DateTime?
+    createdAt          DateTime    @default(now())
+    updatedAt          DateTime    @updatedAt
+    quotationsCreated  Quotation[] @relation("QuotationCreator")
+    quotationsApproved Quotation[] @relation("QuotationApprover")
+}
+
+model Vendor {
+    vendor_id      Int             @id @default(autoincrement())
+    vendor_name    String
+    vendor_address String?
+    vendor_contact String?
+    invoices       VendorInvoice[]
+}
+
+model VendorInvoice {
+    vendor_invoice_id Int      @id @default(autoincrement())
+    invoice_date      DateTime
+    due_date          DateTime
+    total_amount      Decimal  @db.Decimal(10, 2)
+    status            String?
+    vendor_id         Int
+    vendor            Vendor   @relation(fields: [vendor_id], references: [vendor_id])
+}
+
+model Product {
+    product_id          Int                @id @default(autoincrement())
+    product_name        String
+    product_description String?
+    unit_price          Decimal            @db.Decimal(10, 2)
+    stock_quantity      Int
+    quotationProducts   QuotationProduct[]
+}
+
+model Customer {
+    customer_id      Int         @id @default(autoincrement())
+    customer_name    String
+    customer_address String?
+    customer_contact String?
+    quotations       Quotation[]
+}
+
+model DocumentCounter {
+    id            Int    @id @default(autoincrement())
+    document_type String
+    year          Int
+    month         Int
+    last_sequence Int
+
+    @@unique([document_type, year, month])
+}
+
+model Quotation {
+    quotation_id    Int                @id @default(autoincrement())
+    quotation_date  DateTime
+    total_price     Decimal            @db.Decimal(10, 2)
+    status          String             @default("Pending")
+    document_number String?
+    customer_id     Int
+    customer        Customer           @relation(fields: [customer_id], references: [customer_id])
+    products        QuotationProduct[]
+
+    // Approval fields
+    approved_by     String?   @db.VarChar(255)
+    approved_at     DateTime?
+    approver        User?     @relation("QuotationApprover", fields: [approved_by], references: [id])
+    approval_status String    @default("Pending")
+    approval_note   String?   @db.Text
+
+    // Creation fields
+    created_by String?  @db.VarChar(255)
+    creator    User?    @relation("QuotationCreator", fields: [created_by], references: [id])
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt
+
+    @@index([approved_by])
+    @@index([created_by])
+}
+
+model QuotationProduct {
+    quotation_id Int
+    product_id   Int
+    quantity     Int
+    unit_price   Decimal   @db.Decimal(10, 2)
+    quotation    Quotation @relation(fields: [quotation_id], references: [quotation_id])
+    product      Product   @relation(fields: [product_id], references: [product_id])
+
+    @@id([quotation_id, product_id])
 }
