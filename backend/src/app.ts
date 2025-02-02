@@ -1,6 +1,8 @@
 import express from 'express'
 import dotenv from 'dotenv'
 import helmet from 'helmet'
+import cors from 'cors'
+import csurf from 'csurf'
 import authRoutes from './routes/auth.routes'
 import quotationRoutes from './routes/quotation.routes'
 import morganMiddleware from './middleware/morgan.middleware'
@@ -8,9 +10,8 @@ import logger from './config/logger'
 
 dotenv.config()
 const app = express()
-
-logger.info('Application Starting...')
-
+app.use(cors())
+app.use(csurf({ cookie: true }))
 app.use(morganMiddleware)
 app.use(helmet())
 app.use(express.json())

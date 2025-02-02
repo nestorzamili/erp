@@ -3,15 +3,44 @@ import prisma from '../config/db'
 import logger from '../config/logger'
 import { generateDocumentNumber } from '../utils/documentNumber'
 
+interface ProductInput {
+  productId: number
+  quantity: number
+  unitPrice: number
+}
+
+const isValidProductInput = (products: ProductInput[]): boolean => {
+  return products.every(
+    (product) =>
+      typeof product.productId === 'number' &&
+      typeof product.quantity === 'number' &&
+      product.quantity > 0 &&
+      typeof product.unitPrice === 'number' &&
+      product.unitPrice > 0,
+  )
+}
+
 export const createQuotation = async (
   req: Request,
   res: Response,
 ): Promise<void> => {
-  const { quotationDate, totalPrice, customerId, products } = req.body
+  const { quotationDate, totalPrice, customerId, products = [] } = req.body
   const userId = req.user.id
 
   try {
     const documentNumber = await generateDocumentNumber('QUOT')
+
+    if (!Array.isArray(products)) {
+      res.status(400).json({ message: 'Products must be an array' })
+      logger.warn('Products must be an array')
+      return
+    }
+
+    if (!isValidProductInput(products)) {
+      res.status(400).json({ message: 'Invalid product data format' })
+      logger.warn('Invalid product data format')
+      return
+    }
 
     const quotation = await prisma.quotation.create({
       data: {
@@ -139,7 +168,13 @@ export const editQuotation = async (
   res: Response,
 ): Promise<void> => {
   const { quotationId } = req.params
-  const { quotationDate, totalPrice, customerId, status, products } = req.body
+  const {
+    quotationDate,
+    totalPrice,
+    customerId,
+    status,
+    products = [],
+  } = req.body
   const userId = req.user.id
 
   try {
@@ -157,6 +192,18 @@ export const editQuotation = async (
     if (quotation.created_by !== userId) {
       res.status(403).json({ message: 'You cannot edit this quotation' })
       logger.warn('You cannot edit this quotation')
+      return
+    }
+
+    if (!Array.isArray(products)) {
+      res.status(400).json({ message: 'Products must be an array' })
+      logger.warn('Products must be an array')
+      return
+    }
+
+    if (!isValidProductInput(products)) {
+      res.status(400).json({ message: 'Invalid product data format' })
+      logger.warn('Invalid product data format')
       return
     }
 
