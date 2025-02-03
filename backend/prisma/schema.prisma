@@ -53,9 +53,12 @@ model Product {
 
 model Customer {
     customer_id      Int         @id @default(autoincrement())
+    customer_code    String?
     customer_name    String
     customer_address String?
     customer_contact String?
+    customer_company String?
+    customer_email   String?     @unique
     quotations       Quotation[]
 }
 
@@ -70,14 +73,15 @@ model DocumentCounter {
 }
 
 model Quotation {
-    quotation_id    Int                @id @default(autoincrement())
-    quotation_date  DateTime
-    total_price     Decimal            @db.Decimal(10, 2)
-    status          String             @default("Pending")
-    document_number String?
-    customer_id     Int
-    customer        Customer           @relation(fields: [customer_id], references: [customer_id])
-    products        QuotationProduct[]
+    quotation_id     Int                @id @default(autoincrement())
+    quotation_date   DateTime
+    total_price      Decimal            @db.Decimal(10, 2)
+    status           String             @default("Pending")
+    document_number  String?
+    customer_id      Int
+    terms_of_payment Int?
+    customer         Customer           @relation(fields: [customer_id], references: [customer_id])
+    products         QuotationProduct[]
 
     // Approval fields
     approved_by     String?   @db.VarChar(255)

@@ -8,6 +8,7 @@ import {
   editQuotation,
   deleteQuotation,
   rejectQuotation,
+  generateQuotationPdf,
 } from '../controllers/quotation.controller'
 
 const router = express.Router()
@@ -20,5 +21,6 @@ router.put('/quotations/:quotationId', editQuotation)
 router.delete('/quotations/:quotationId', deleteQuotation)
 router.put('/quotations/:quotationId/approve', approveQuotation)
 router.put('/quotations/:quotationId/reject', rejectQuotation)
+router.get('/quotations/:quotationId/export-pdf', generateQuotationPdf)
 
 export default router

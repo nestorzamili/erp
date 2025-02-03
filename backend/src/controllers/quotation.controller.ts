@@ -2,6 +2,8 @@ import { Request, Response } from 'express'
 import prisma from '../config/db'
 import logger from '../config/logger'
 import { generateDocumentNumber } from '../utils/documentNumber'
+import { generatePdf } from '../utils/pdfGenerator'
+import { getQuotationTemplate } from '../templates/quotationTemplate'
 
 interface ProductInput {
   productId: number
@@ -334,6 +336,54 @@ export const getQuotation = async (
     logger.info('Quotation retrieved successfully')
   } catch (error) {
     logger.error('Error retrieving quotation:', error)
+    res.status(500).json({ message: 'Internal Server Error' })
+  }
+}
+
+// generate pdf
+export const generateQuotationPdf = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
+  const { quotationId } = req.params
+
+  try {
+    const quotation = await prisma.quotation.findUnique({
+      where: { quotation_id: parseInt(quotationId) },
+      include: {
+        creator: true,
+        customer: true,
+        products: {
+          include: {
+            product: true,
+          },
+        },
+      },
+    })
+
+    if (!quotation) {
+      res.status(404).json({ message: 'Quotation not found' })
+      logger.warn('Quotation not found')
+      return
+    }
+
+    if (quotation.approval_status !== 'Approved') {
+      res.status(400).json({ message: 'Quotation must be approved' })
+      logger.warn('Quotation must be approved')
+      return
+    }
+
+    const htmlContent = getQuotationTemplate(quotation)
+    const pdfBuffer = await generatePdf(htmlContent)
+
+    res.setHeader('Content-Type', 'application/pdf')
+    res.setHeader(
+      'Content-Disposition',
+      `attachment; filename="${quotation.document_number}.pdf"`,
+    )
+    res.send(pdfBuffer)
+  } catch (error) {
+    logger.error('Error generating quotation PDF:', error)
     res.status(500).json({ message: 'Internal Server Error' })
   }
 }
