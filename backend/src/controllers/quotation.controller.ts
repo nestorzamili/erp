@@ -165,7 +165,7 @@ export const rejectQuotation = async (
 }
 
 // Edit quotation
-export const editQuotation = async (
+export const updateQuotation = async (
   req: Request,
   res: Response,
 ): Promise<void> => {
@@ -290,7 +290,7 @@ export const deleteQuotation = async (
 }
 
 // get all quotations
-export const getAllQuotations = async (
+export const getQuotations = async (
   req: Request,
   res: Response,
 ): Promise<void> => {
@@ -311,7 +311,7 @@ export const getAllQuotations = async (
 }
 
 // get single quotation
-export const getQuotation = async (
+export const getQuotationById = async (
   req: Request,
   res: Response,
 ): Promise<void> => {

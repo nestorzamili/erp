@@ -10,11 +10,11 @@ import {
 
 const router = express.Router()
 
-// Customer routes
-router.get('/customer', authMiddleware, getCustomers)
-router.get('/customer/:id', authMiddleware, getCustomer)
-router.post('/customer', authMiddleware, createCustomer)
-router.put('/customer/:id', authMiddleware, updateCustomer)
-router.delete('/customer/:id', authMiddleware, deleteCustomer)
+router.use(authMiddleware)
+router.get('/customer', getCustomers)
+router.get('/customer/:id', getCustomer)
+router.post('/customer', createCustomer)
+router.put('/customer/:id', updateCustomer)
+router.delete('/customer/:id', deleteCustomer)
 
 export default router

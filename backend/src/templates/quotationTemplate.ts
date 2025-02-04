@@ -130,7 +130,7 @@ export const getQuotationTemplate = (quotation: any): string => {
             <tbody>
             ${renderProducts()}
             <tr>
-                <td colspan="5" class="text-right"><strong>Total</strong></td>
+                <td colspan="6" class="text-right"><strong>Total</strong></td>
                 <td colspan="2" class="text-right"><strong>${formatNumber(totalAmount)}</strong></td>
             </tr>
             </tbody>

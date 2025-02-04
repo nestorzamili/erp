@@ -2,10 +2,10 @@ import express from 'express'
 import { authMiddleware } from '../middleware/auth.middleware'
 import {
   createQuotation,
-  getAllQuotations,
-  getQuotation,
+  getQuotations,
+  getQuotationById,
   approveQuotation,
-  editQuotation,
+  updateQuotation,
   deleteQuotation,
   rejectQuotation,
   generateQuotationPdf,
@@ -14,13 +14,13 @@ import {
 const router = express.Router()
 
 router.use(authMiddleware)
-router.post('/quotations', createQuotation)
-router.get('/quotations', getAllQuotations)
-router.get('/quotations/:quotationId', getQuotation)
-router.put('/quotations/:quotationId', editQuotation)
-router.delete('/quotations/:quotationId', deleteQuotation)
-router.put('/quotations/:quotationId/approve', approveQuotation)
-router.put('/quotations/:quotationId/reject', rejectQuotation)
-router.get('/quotations/:quotationId/export-pdf', generateQuotationPdf)
+router.get('/quotation', getQuotations)
+router.get('/quotation/:quotationId', getQuotationById)
+router.post('/quotation', createQuotation)
+router.put('/quotation/:quotationId', updateQuotation)
+router.delete('/quotation/:quotationId', deleteQuotation)
+router.put('/quotation/:quotationId/approve', approveQuotation)
+router.put('/quotation/:quotationId/reject', rejectQuotation)
+router.get('/quotation/:quotationId/export-pdf', generateQuotationPdf)
 
 export default router
