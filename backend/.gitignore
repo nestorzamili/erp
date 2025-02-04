@@ -4,3 +4,4 @@ dist
 logs
 *.log
 npm-debug.log*
+prisma/seed.ts
