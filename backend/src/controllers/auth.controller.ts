@@ -311,3 +311,34 @@ export const resetPassword = async (
     res.status(500).json({ message: 'Internal Server Error' })
   }
 }
+
+// update user name or password
+export const updateUser = async (req: Request, res: Response) => {
+  try {
+    const { name, password } = req.body
+    const userId = req.user?.id
+
+    if (!userId) {
+      return res.status(401).json({ message: 'Unauthorized' })
+    }
+
+    const updateData: any = {}
+    if (name) updateData.name = name
+    if (password) {
+      const salt = await bcrypt.genSalt(10)
+      updateData.password = await bcrypt.hash(password, salt)
+    }
+
+    const updatedUser = await prisma.user.update({
+      where: { id: userId },
+      data: updateData,
+      select: { id: true, name: true, email: true },
+    })
+
+    return res
+      .status(200)
+      .json({ message: 'Profile updated', user: updatedUser })
+  } catch (error) {
+    return res.status(500).json({ message: 'Something went wrong', error })
+  }
+}
