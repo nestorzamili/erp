@@ -63,13 +63,8 @@ model Customer {
 }
 
 model DocumentCounter {
-    id            Int    @id @default(autoincrement())
-    document_type String
-    year          Int
-    month         Int
-    last_sequence Int
-
-    @@unique([document_type, year, month])
+    id            Int @id @default(autoincrement())
+    last_sequence Int @default(0)
 }
 
 model Quotation {

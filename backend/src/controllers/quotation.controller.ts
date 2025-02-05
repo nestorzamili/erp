@@ -279,6 +279,17 @@ export const deleteQuotation = async (
       await tx.quotation.delete({
         where: { quotation_id: parseInt(quotationId) },
       })
+
+      const counter = await tx.documentCounter.findFirst({
+        orderBy: { last_sequence: 'desc' },
+      })
+
+      if (counter && counter.last_sequence > 0) {
+        await tx.documentCounter.update({
+          where: { id: counter.id },
+          data: { last_sequence: { decrement: 1 } },
+        })
+      }
     })
 
     res.json({ message: 'Quotation deleted successfully' })
