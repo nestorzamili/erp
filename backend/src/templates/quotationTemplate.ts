@@ -1,21 +1,23 @@
+import ASSETS from '../config/constants'
+
 const styles = `
-  @page { size: A4; margin: 10mm; }
-  @page { @bottom-right { content: "Page " counter(page) " of " counter(pages); font-size: 10px; }}
+  @page { size: A4; margin: 10mm 10mm 15mm 10mm; }
+  @page { @bottom-right { content: "Page " counter(page) " of " counter(pages); font-size: 10px; margin-bottom: 30px; } }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: Arial, sans-serif; }
   .container { width: 210mm; min-height: 297mm; margin: auto; padding: 5px; }
-  .header { display: flex; align-items: center; justify-content: center; margin-bottom: 10px; padding: 30px 0; position: relative; }
+  .header { display: flex; align-items: center; justify-content: center; margin-bottom: 5px; padding: 30px 0; position: relative; margin-top: 0;}
   .logo-container { position: absolute; left: 10px; }
   .header img { width: 120px; height: auto; }
   .header h1 { color: #0056b3; margin: 0; flex-grow: 1; text-align: center; font-size: 27px; }
-  .quotation-title { background: #f4b400; padding: 10px; font-weight: bold; text-align: center; margin: 20px 0; }
+  .quotation-title { background: #f4b400; padding: 5px; font-weight: bold; text-align: center; margin: 10px 0; }
   .contact-container { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 10px; }
   .contact-info { display: grid; grid-template-columns: 100px 1fr; gap: 5px; font-size: 12px; align-items: center; }
   .contact-label { font-weight: bold; text-align: right; white-space: nowrap; }
   .contact-value { text-align: left; padding-left: 10px; }
   .page { page-break-after: always; }
   .page:last-child { page-break-after: avoid; }
-  table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 10pt; }
+  table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 12px; }
   th, td { border: 1px solid #ddd; padding: 6px; text-align: center; }
   th { background-color: #3aa7d3; color: white; }
   .text-left { text-align: left; }
@@ -56,7 +58,7 @@ export const getQuotationTemplate = (quotation: any): string => {
     <div class="page">
         <div class="header">
             <div class="logo-container">
-            <img src="https://jgtkeyfxjkjzumehdhpo.supabase.co/storage/v1/object/sign/navindo/Logo%20Navindo.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJuYXZpbmRvL0xvZ28gTmF2aW5kby5wbmciLCJpYXQiOjE3Mzg0MzE2NjgsImV4cCI6MTc2OTk2NzY2OH0.eUILCJAehY_VJ02gMN07_EtURSomfUtnUgd5mvcDAdE" alt="PT Navindo Maritim Indonesia">
+            <img src="${ASSETS.LOGO_URL}" alt="PT Navindo Maritim Indonesia">
             </div>
             <h1>PT NAVINDO MARITIM INDONESIA</h1>
         </div>

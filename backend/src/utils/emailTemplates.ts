@@ -1,5 +1,4 @@
-const logoUrl =
-  'https://jgtkeyfxjkjzumehdhpo.supabase.co/storage/v1/object/sign/navindo/Logo%20Navindo.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJuYXZpbmRvL0xvZ28gTmF2aW5kby5wbmciLCJpYXQiOjE3Mzg0MzE2NjgsImV4cCI6MTc2OTk2NzY2OH0.eUILCJAehY_VJ02gMN07_EtURSomfUtnUgd5mvcDAdE'
+import ASSETS from '../config/constants'
 
 export const generateEmailTemplate = ({
   title,
@@ -83,7 +82,7 @@ export const generateEmailTemplate = ({
     <body>
       <div class="container">
         <div class="header">
-          <img src="${logoUrl}" alt="Navindo Logo">
+          <img src="${ASSETS.LOGO_URL}" alt="Navindo Logo">
         </div>
         <div class="content">
           <h1>${title}</h1>
