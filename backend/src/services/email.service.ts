@@ -1,5 +1,5 @@
 import transporter from '../config/nodemailer'
-import { generateEmailTemplate } from '../utils/emailTemplates'
+import { generateEmailTemplate } from '../templates/emailTemplates'
 
 export const sendVerificationEmail = async (email: string, token: string) => {
   const verifyLink = `${process.env.FRONTEND_URL}/verify-email?token=${token}`
