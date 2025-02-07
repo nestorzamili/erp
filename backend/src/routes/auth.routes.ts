@@ -7,9 +7,7 @@ import {
   verifyEmail,
   requestPasswordReset,
   resetPassword,
-  updateUser,
 } from '../controllers/auth.controller'
-import { authMiddleware } from '../middleware/auth.middleware'
 import { emailRateLimiter } from '../middleware/rateLimit'
 
 const router = express.Router()
@@ -30,8 +28,5 @@ router.get('/auth/verify-email', verifyEmail)
 // Password reset routes
 router.post('/auth/request-password-reset', requestPasswordReset)
 router.post('/auth/reset-password', resetPassword)
-
-// Update user profile
-router.put('/auth/update-user', authMiddleware, updateUser)
 
 export default router

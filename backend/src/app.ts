@@ -9,6 +9,7 @@ import quotationRoutes from './routes/quotation.routes'
 import customerRoutes from './routes/customer.routes'
 import productRoutes from './routes/product.routes'
 import vendorRoutes from './routes/vendor.routes'
+import userRoutes from './routes/user.routes'
 import morganMiddleware from './middleware/morgan.middleware'
 import logger from './config/logger'
 import { authMiddleware } from './middleware/auth.middleware'
@@ -87,6 +88,7 @@ app.use('/api', quotationRoutes)
 app.use('/api', customerRoutes)
 app.use('/api', productRoutes)
 app.use('/api', vendorRoutes)
+app.use('/api', userRoutes)
 
 // Error handling
 app.use(
