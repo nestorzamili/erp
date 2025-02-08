@@ -1,7 +1,7 @@
 .env
-node_modules
-dist
-logs
+node_modules/
+dist/
+logs/
 *.log
 npm-debug.log*
 prisma/seed.ts
