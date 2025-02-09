@@ -9,8 +9,9 @@ export const generateAccessToken = (
   role: string,
   name: string,
   email: string,
+  photoUrl?: string | null,
 ) => {
-  return jwt.sign({ userId, role, name, email }, JWT_SECRET, {
+  return jwt.sign({ userId, role, name, email, photoUrl }, JWT_SECRET, {
     expiresIn: '15m',
   })
 }
@@ -20,8 +21,9 @@ export const generateRefreshToken = (
   role: string,
   name: string,
   email: string,
+  photoUrl?: string | null,
 ) => {
-  return jwt.sign({ userId, role, name, email }, JWT_REFRESH_SECRET, {
+  return jwt.sign({ userId, role, name, email, photoUrl }, JWT_REFRESH_SECRET, {
     expiresIn: '7d',
   })
 }

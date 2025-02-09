@@ -12,6 +12,7 @@ import {
   sendPasswordResetEmail,
 } from '../services/email.service'
 import logger from '../config/logger'
+import { getOptimizedUrl } from '../utils/cloudinary'
 
 export const register = async (req: Request, res: Response): Promise<void> => {
   const { name, email, password, role } = req.body
@@ -82,17 +83,21 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       return
     }
 
+    const photoUrl = user.photoUrl ? getOptimizedUrl(user.photoUrl) : null
+
     const accessToken = generateAccessToken(
       user.id,
       user.role,
       user.name,
       user.email,
+      photoUrl,
     )
     const refreshToken = generateRefreshToken(
       user.id,
       user.role,
       user.name,
       user.email,
+      photoUrl,
     )
     logger.info('User logged in successfully')
     res.json({ accessToken, refreshToken })

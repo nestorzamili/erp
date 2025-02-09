@@ -13,6 +13,7 @@ const verifyToken = async (
   role: string
   name: string
   email: string
+  photoUrl: string
 } | null> => {
   try {
     const decoded = jwt.verify(token, JWT_SECRET) as {
@@ -20,6 +21,7 @@ const verifyToken = async (
       role: string
       name: string
       email: string
+      photoUrl: string
     }
     return decoded
   } catch (error) {
@@ -53,6 +55,7 @@ export const authMiddleware = async (
     role: decoded.role,
     name: decoded.name,
     email: decoded.email,
+    photoUrl: decoded.photoUrl,
   }
 
   next()
@@ -84,6 +87,7 @@ export const isAdmin = async (
     role: decoded.role,
     name: decoded.name,
     email: decoded.email,
+    photoUrl: decoded.photoUrl,
   }
 
   // Cari user di database
